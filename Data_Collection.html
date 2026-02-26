@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Modeling Modules Architecture</title>
+
+<!-- Mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "base",
+  flowchart: {
+    htmlLabels: true,
+    curve: "basis",
+    useMaxWidth: true
+  }
+});
+</script>
+
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f8;
+  margin: 40px;
+  color: #222;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.diagram-container {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+.legend {
+  margin-top: 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 14px;
+}
+
+.legend-item {
+  margin-bottom: 6px;
+}
+
+.color-box {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid black;
+}
+
+.auton { background-color: #FFD84D; }
+.semi { background-color: #7CFC7C; }
+.human { background-color: #FF6B6B; }
+</style>
+
+</head>
+<body>
+
+<h1>Financial Modeling Modules Architecture</h1>
+<div class="subtitle">Equity Research Accounting, Risk, Industry & Sensitivity Framework</div>
+
+<div class="diagram-container">
+<div class="mermaid">
+
+flowchart TD
+
+%% =====================================================
+%% CLASS DEFINITIONS
+%% =====================================================
+
+classDef Autonomous fill:#FFD84D,stroke:#000000,color:#000000;
+classDef SemiAutonomous fill:#7CFC7C,stroke:#000000,color:#000000;
+classDef Human fill:#FF6B6B,stroke:#000000,color:#000000;
+
+DocA0["10-K/10-Q Consolidated Financial Statements"]
+DocA3["10-K/10-Q MD&A/Footnotes"]
+DocB["Earnings Releases/Investor Presentations"]
+DocD["Industry Associations/Research Firms"]
+DocE["Government Economic/Macro Data"]
+DocF["Market Data Providers (FactSet/Bloomberg/Cap IQ)"]
+DocG["Sell-Side Research"]
+
+%% =====================================================
+%% GAAP MODULES
+%% =====================================================
+
+subgraph GAAP["Financial Accounting Modules"]
+direction TB
+G6["PP&E, Cap Ex and D&A Schedule"]:::Autonomous
+G9["Business Combinations"]:::SemiAutonomous
+C1["Debt & Interest Schedule"]:::Autonomous
+A1["Working Capital Roll-Forward"]:::Autonomous
+A3["Lease-Adjusted Net Debt"]:::Autonomous
+S4["Asset Retirement Obligations"]:::SemiAutonomous
+end
+
+DocA3 --> GAAP
+DocA0 --> GAAP
+DocB --> GAAP
+DocF --> GAAP
+
+%% =====================================================
+%% BUSINESS DISAGGREGATION
+%% =====================================================
+
+subgraph Disaggregation["Business Disaggregations"]
+direction TB
+O1["Business Segmentation"]:::SemiAutonomous
+O2["Geographic Segmentation"]:::SemiAutonomous
+end
+
+DocA3 --> Disaggregation
+DocG --> Disaggregation
+DocB --> Disaggregation
+
+%% =====================================================
+%% NON-GAAP
+%% =====================================================
+
+subgraph NonGAAP["Non-GAAP Financial Metrics"]
+TS1["Non-GAAP Reconciliation & Non-recurring items"]:::Autonomous
+S2["Price / Volume / Mix Bridge"]:::Autonomous
+O4["Backlog / RPO"]:::SemiAutonomous
+end
+
+DocA3 --> NonGAAP
+DocB --> NonGAAP
+DocG --> NonGAAP
+
+%% =====================================================
+%% RISK
+%% =====================================================
+
+subgraph RISK["Off-Balance Sheet & Risk"]
+direction TB
+R1["Guarantees & Commitments"]:::SemiAutonomous
+R3["VIEs"]:::SemiAutonomous
+R4["Derivatives & Hedging"]:::SemiAutonomous
+R5["Fair Value Measurements"]:::SemiAutonomous
+O3["Customer Concentration"]:::SemiAutonomous
+end
+
+DocA3 --> RISK
+
+%% =====================================================
+%% TAX
+%% =====================================================
+
+subgraph TAX["Tax & Regulatory"]
+direction TB
+T2["Pension Model"]:::SemiAutonomous
+T3["Regulatory Capital"]:::SemiAutonomous
+end
+
+DocA0 --> TAX
+DocA3 --> TAX
+
+%% =====================================================
+%% SENSITIVITIES
+%% =====================================================
+
+subgraph Sensitivities["Sensitivities"]
+direction TB
+A4["FX Sensitivity"]:::Autonomous
+A5["Commodity Sensitivity"]:::Autonomous
+A7["Covenant Compliance Model"]:::Autonomous
+T4["Share Buyback & Dilution"]
+end
+
+DocA3 --> Sensitivities
+DocB --> Sensitivities
+
+%% =====================================================
+%% INDUSTRY
+%% =====================================================
+
+subgraph Industry["Industry Metrics & Operating KPIs"]
+direction TB
+Q1["Market Share"]
+Q2["TAM, Volume Data"]
+Q3["Product-Level Data"]
+end
+
+DocA3 --> Industry
+DocB --> Industry
+DocF --> Industry
+DocG --> Industry
+
+</div>
+</div>
+
+<div class="legend">
+<h3>Legend</h3>
+
+<div class="legend-item">
+<span class="color-box auton"></span>
+<strong>Yellow:</strong> Autonomous LLM Process
+</div>
+
+<div class="legend-item">
+<span class="color-box semi"></span>
+<strong>Green:</strong> Semi-Autonomous (Human in the Loop)
+</div>
+
+<div class="legend-item">
+<span class="color-box human"></span>
+<strong>Red:</strong> Human Required
+</div>
+
+</div>
+
+</body>
+</html>
