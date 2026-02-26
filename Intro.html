@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overview of Model Construction</title>
+
+<!-- Mermaid CDN -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "base",
+  flowchart: {
+    htmlLabels: true,
+    curve: "basis"
+  }
+});
+</script>
+
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 40px;
+  color: #222;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.mermaid {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.legend {
+  margin-top: 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 14px;
+}
+
+.legend h3 {
+  margin-top: 0;
+}
+
+.legend-item {
+  margin-bottom: 6px;
+}
+
+.color-box {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid black;
+}
+
+.green { background-color: #C8E6C9; }
+.yellow { background-color: #FFF9C4; }
+.red { background-color: #FFCDD2; }
+.purple { background-color: #E1BEE7; }
+</style>
+
+</head>
+<body>
+
+<h1>Overview of Model Construction</h1>
+<div class="subtitle">Equity Research Model Architecture & Capability Mapping</div>
+
+<div class="mermaid">
+
+flowchart TD
+
+classDef Auton fill:#C8E6C9,stroke:#000000,color:#000000;
+classDef SemiA fill:#FFF9C4,stroke:#000000,color:#000000;
+classDef Human fill:#FFCDD2,stroke:#000000,color:#000000;
+classDef Both fill:#E1BEE7,stroke:#000000,color:#000000;
+classDef Group fill:transparent,stroke:#000000,color:#000000;
+
+A(Start) --> B[Prepare Spreadsheet]:::Auton
+B --> C{Determine Valuation Methodologies}:::Human
+C --> D[Collect Data Sources]:::Both
+D --> E{Determine Applicable Modeling Modules}:::SemiA
+E --> F[Input Historical Data]:::Auton
+
+F --> Model_Links:::Group
+
+subgraph Model_Links ["Identify Variable Linkages"]
+direction TB
+F1["Coincident Linked Data<br/>(e.g. aggregations, margins)"]:::SemiA
+F2["Temporally Linked Data<br/>(e.g. y/y & q/q calculations, beginning/ending values)"]:::SemiA
+F3["Accounting Linked Data<br/>(net income to OCF, net income to equity, WC changes to cash flow)"]:::Auton
+end
+
+Model_Links --> G["Generate Calculated Values for Relevant Metrics with Available Data"]:::Both
+G --> Forecast:::Group
+
+subgraph Forecast ["Generate Financial Forecasts"]
+direction TB
+H1{Evaluate predictive value of forecast variables}:::SemiA
+H2{Evaluate predictability of forecast variables}:::Human
+H1 --> I[Perform Sequential Driver-Based Forecast]:::SemiA
+H2 --> I
+end
+
+I --> J[Valuation: Perform Applicable Valuation Analyses]:::SemiA
+
+%% Clickable Links
+click B "https://jheck-lang.github.io/" "_blank"
+click D "https://jheck-lang.github.io/" "_blank"
+click E "https://jheck-lang.github.io/" "_blank"
+click F "https://jheck-lang.github.io/" "_blank"
+click F1 "https://jheck-lang.github.io/" "_blank"
+click F2 "https://jheck-lang.github.io/" "_blank"
+click F3 "https://jheck-lang.github.io/" "_blank"
+click G "https://jheck-lang.github.io/" "_blank"
+click H1 "https://jheck-lang.github.io/" "_blank"
+click I "https://jheck-lang.github.io/" "_blank"
+click J "https://jheck-lang.github.io/" "_blank"
+
+</div>
+
+<div class="legend">
+<h3>Legend & Node Definitions</h3>
+
+<div class="legend-item">
+<span class="color-box green"></span>
+<strong>Green:</strong> Autonomous LLM
+</div>
+
+<div class="legend-item">
+<span class="color-box yellow"></span>
+<strong>Yellow:</strong> Human in the Loop
+</div>
+
+<div class="legend-item">
+<span class="color-box red"></span>
+<strong>Red:</strong> Human
+</div>
+
+<div class="legend-item">
+<span class="color-box purple"></span>
+<strong>Purple:</strong> Underlying Process Includes Both
+</div>
+
+<br/>
+
+<div class="legend-item">
+<strong>Rectangle Node:</strong> Action Node
+</div>
+
+<div class="legend-item">
+<strong>Diamond Node:</strong> Decision Node
+</div>
+
+</div>
+
+</body>
+</html>
